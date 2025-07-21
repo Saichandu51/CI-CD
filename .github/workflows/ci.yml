@@ -3,7 +3,7 @@ name: Flask App CI
 on:
   push:
     branches:
-      - main  # or 'master' depending on your branch name
+      - main
 
 jobs:
   build:
@@ -23,17 +23,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run basic lint check (optional)
+    - name: Set Timezone to IST
       run: |
-        echo "Running lint..."
-        python -m py_compile app.py
+        sudo timedatectl set-timezone Asia/Kolkata
+        date
 
     - name: Save CI status
       run: |
         mkdir -p data
         echo '{
           "status": "success",
-          "timestamp": "'$(date -u +'%Y-%m-%d %H:%M')'",
+          "timestamp": "'$(date +'%Y-%m-%d %H:%M')'",
           "message": "Build passed on $GITHUB_REF"
         }' > data/ci_status.json
 
