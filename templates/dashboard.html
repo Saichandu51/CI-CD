@@ -5,4 +5,22 @@
 {% block content %}
 <h1>CI/CD Dashboard</h1>
 <p>Welcome to your dashboard!</p>
+<div class="card">
+  <div class="card-header">
+    <h1 class="card-title">CI/CD Status</h1>
+  </div>
+  <div class="post-meta">
+    <p><strong>Status:</strong>
+      {% if ci_status.status == 'success' %}
+        ✅ {{ ci_status.status | capitalize }}
+      {% elif ci_status.status == 'failed' %}
+        ❌ {{ ci_status.status | capitalize }}
+      {% else %}
+        ❓ {{ ci_status.status }}
+      {% endif %}
+    </p>
+    <p><strong>Last Updated:</strong> {{ ci_status.timestamp }}</p>
+    <p><strong>Message:</strong> {{ ci_status.message }}</p>
+  </div>
+</div>
 {% endblock %}

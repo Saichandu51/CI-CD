@@ -5,7 +5,8 @@ from datetime import datetime
 from pathlib import Path
 
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY')
+#  app.secret_key = os.getenv('FLASK_SECRET_KEY')
+app.secret_key = "dev-secret"
 
 # Blog setup
 BLOG_FILE = Path('data/blog_posts.json')
@@ -36,13 +37,26 @@ def save_blog_post(title, content):
     with open(BLOG_FILE, 'w') as f:
         json.dump(posts, f, indent=2)
 
+# CI/CD status reader
+def get_ci_status():
+    try:
+        with open('data/ci_status.json') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {
+            "status": "unknown",
+            "timestamp": "N/A",
+            "message": "No CI/CD info available"
+        }
+
 @app.route('/')
 def home():
     return redirect(url_for('dashboard'))
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    ci_status = get_ci_status()
+    return render_template('dashboard.html', ci_status=ci_status)
 
 @app.route('/blog')
 def blog():
